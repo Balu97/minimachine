@@ -11,6 +11,8 @@ minus = 0
 leftparen = 0
 rightparen = 0
 
+parenstack = []
+
 while char = if.read(1):
 	if char == '>':
 		plus += 1		
@@ -43,13 +45,14 @@ while char = if.read(1):
 		of.write("STORE minusstore" + str(minus) + ": 0\n")
 
 	elif char == '[':
-		leftparens += 1
+		leftparen += 1
+                parenstack.append(leftparen)
 		of.write("leftparen" + str(leftparen) + ": LOAD 65535\n")
 		of.write("STORE leftparenload" + str(leftparen) + "\n")
 		of.write("LOAD leftparenload" + str(leftparen) + ": 0\n")
 		of.write("JMPZ rightparen" + str(leftparen) + ": 0\n")
 
 	elif char == ']':
-		rightparen += 1
+		rightparen = parenstack.pop()
 		of.write("JMP leftparen" + str(rightparen) + "\n")
 		of.write("rightparen" + str(rightparen) + ": ")
